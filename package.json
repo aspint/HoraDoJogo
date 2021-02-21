@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "log4js": "^6.3.0",
+    "readline-sync": "^1.4.10"
   }
 }
