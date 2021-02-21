@@ -25,17 +25,17 @@ class MegaSenaApiGateway{
     }
     async concursoPorIntervalo(numero){
         let ultimoConcurso = await this.ultimoConcurso();
-        var concursoNumero = ultimoConcurso.numero;
+        var numeroConcurso = ultimoConcurso.numero;
         let ultimosNumerosConcursos = [];
-        ultimosNumerosConcursos.push(ultimoConcurso.listaDezenas);
-        for(var i=1;i<numero;i++){
-            concursoNumero--
-            var novaUrl = api.urlJogoEspecifico.toString()+concursoNumero;
+        for(var i=0;i<numero;i++){
+            var novaUrl = api.urlJogoEspecifico.toString()+numeroConcurso;
             let number = await this.concursoEspecifico(novaUrl)
-            ultimosNumerosConcursos.push(number.listaDezenas)
+            ultimosNumerosConcursos.push(number)
+            numeroConcurso--
         }
         return ultimosNumerosConcursos;
     }
+
     concursoEspecifico(url){
         logger.loggerDebug(url, "URL de consulta especifico: ")
         return axios.get(url,{
