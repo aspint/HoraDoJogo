@@ -1,31 +1,53 @@
-const axios = require('axios')
+const axios = require('axios');
+const logger = require('../utils/logs/logger');
 
 var loteria;
 
-class MegaSenaApiGateway{
 
-    ultimoConcurso(urlUltimoJogo, Cookies){
-        axios.get(urlUltimoJogo.toString(), {
-            headers:{
-                Cookie: Cookies.toString()
+const api = {
+    urlUltimoJogo:'http://loterias.caixa.gov.br/wps/portal/loterias/landing/megasena/!ut/p/a1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLNDH0MPAzcDbwMPI0sDBxNXAOMwrzCjA0sjIEKIoEKnN0dPUzMfQwMDEwsjAw8XZw8XMwtfQ0MPM2I02-AAzgaENIfrh-FqsQ9wNnUwNHfxcnSwBgIDUyhCvA5EawAjxsKckMjDDI9FQE-F4ca/dl5/d5/L2dBISEvZ0FBIS9nQSEh/pw/Z7_HGK818G0KO6H80AU71KG7J0072/res/id=buscaResultado/',
+    urlJogoEspecifico:'http://loterias.caixa.gov.br/wps/portal/loterias/landing1/megasena/!ut/p/a1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLNDH0MPAzcDbwMPI0sDBxNXAOMwrzCjA0sjIEKIoEKnN0dPUzMfQwMDEwsjAw8XZw8XMwtfQ0MPM2I02-AAzgaENIfrh-FqsQ9wNnUwNHfxcnSwBgIDUyhCvA5EawAjxsKckMjDDI9FQE-F4ca/dl5/d5/L2dBISEvZ0FBIS9nQSEh/pw/Z7_HGK818G0KO6H80AU71KG7J0072/res/id=buscaResultado//p=concurso=',
+    Cookies:"security=true; Path=/; Domain=loterias.caixa.gov.br"
+
+}
+class MegaSenaApiGateway{
+    ultimoConcurso(){
+        return axios.get(api.urlUltimoJogo.toString(), {
+            headers:{ 
+                Cookie: api.Cookies.toString() 
             }
-        }) 
-            .then(response => {
-                loteria = response.data
-                
-                console.log(`    Ultimo jogo concurso nº: `+loteria.numero +
-                `.\n    Numeros sorteado ` +loteria.dezenasSorteadasOrdemSorteio); 
-                console.log('\n\n\n');
-                
-                return loteria;
-        
+        }).then(response => {
+                return  response.data
             })
             .catch(err => {
-                console.error(err)
-                console.log("Entrou no erro");
+                logger.loggerError(err)
             })
-        
-
+    }
+    async concursoPorIntervalo(numero){
+        let ultimoConcurso = await this.ultimoConcurso();
+        var concursoNumero = ultimoConcurso.numero;
+        let ultimosNumerosConcursos = [];
+        ultimosNumerosConcursos.push(ultimoConcurso.listaDezenas);
+        for(var i=1;i<numero;i++){
+            concursoNumero--
+            var novaUrl = api.urlJogoEspecifico.toString()+concursoNumero;
+            let number = await this.concursoEspecifico(novaUrl)
+            ultimosNumerosConcursos.push(number.listaDezenas)
+        }
+        return ultimosNumerosConcursos;
+    }
+    concursoEspecifico(url){
+        logger.loggerDebug(url, "URL de consulta especifico: ")
+        return axios.get(url,{
+            headers:{
+                Cookie : api.Cookies.toString()
+            }
+        }).then(response =>{
+            logger.loggerDebug(response.data.listaDezenas, "Dezenas Sorteadas em "+response.data.dataApuracao+":")
+            return response.data;
+        }).catch(err=>{
+            logger.loggerError(err);
+        })
     }
 }
 
