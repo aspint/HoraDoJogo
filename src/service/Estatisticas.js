@@ -27,7 +27,6 @@ class Estatistica{
                     dezMenoMediMaio[2]++;
                 }
             }
-            dezMenoMediMaio = [2,2,2]
             var indice = dezMenoMediMaio.indexOf(Math.max(parseInt(dezMenoMediMaio)));
             
             //Verifica se as dezenas do jogo são regular
@@ -37,15 +36,13 @@ class Estatistica{
                 if (parseInt(dezMenoMediMaio[i]) != parseInt(dezMenoMediMaio[indice])){
                     regular=false;
                 }
-                
             }
             if(regular){
                 tipoDoJogo = "Regular";
                 return tipoDoJogo;
-
             }
 
-            //Varifica se as dezenas do jogo são Menor, Madiano ou Menor
+            //Varifica se as dezenas do jogo são Menor, Madiano ou Maior
             if ( dezMenoMediMaio[indice] >= 3){
                 switch (indice){
                     case 0:
