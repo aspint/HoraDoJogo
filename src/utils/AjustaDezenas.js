@@ -1,5 +1,10 @@
-function AjustaDezenas(concursos){
-    
+const { loggerError } = require("./logs/Logger");
 
+function ajustarDezenas(concursos){
+    for(var i = 0; i < concursos.listaDezenas.length ; i++){
+        concursos.listaDezenas[i] = parseInt(concursos.listaDezenas[i])
+    }
+    return concursos
 }
-exports.modules.AjustaDezenas = AjustaDezenas;
+module.exports.ajustarDezenas = ajustarDezenas;
+
