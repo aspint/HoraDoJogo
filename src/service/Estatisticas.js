@@ -36,6 +36,7 @@ class Estatistica{
                 if (parseInt(dezMenoMediMaio[i]) != parseInt(dezMenoMediMaio[indice])){
                     regular=false;
                     break;
+                    
                 }
             }
             if(regular){
